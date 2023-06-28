@@ -17,8 +17,8 @@
 
 ## 📃 개발 내용
 * 메인 페이지 및 사이트메쉬
-* 콘서트 관리 - 콘서트 CRUD
-* 예매 관리 - 예매 CRUD
+* 콘서트 관리 CRUD
+* 예매 관리 CRUD
 
 ## ⚙ 개발 환경
 * `Java 8`
@@ -32,7 +32,7 @@
 
 ***
 ## 📌 주요 개발 기능
-#### 좌석배치도 - <a href="https://github.com/nireah/ezenticket/blob/5c718dfb70b772be715d38b247b23feda137fac9/src/main/webapp/WEB-INF/views/ticketing/seat1.jsp#L54-L145">코드보기<a>
+#### 좌석배치도 - <a href="https://github.com/nireah/ezenticket/blob/5c718dfb70b772be715d38b247b23feda137fac9/src/main/webapp/WEB-INF/views/ticketing/seat1.jsp#L54-L145">🔗코드보기<a>
 * 열은 숫자로, 행은 알파벳으로 반복문을 실행하여 좌석배치도를 구현함.
 * 좌석등급에 따라 체크박스 색상이 다르게 나타나도록 구현함.
 * 콘서트마다 장소번호를 부여하여 그 번호에 따라 다른 좌석배치도가 출력되도록 구현함.
@@ -40,13 +40,13 @@
 
 #### 검색 및 페이징 처리
 * sitemesh에 포함되어 있는 검색창에 검색어를 입력하여 검색.
-* 해당 검색어가 포함된 콘서트 리스트가 출력되도록 구현함. - **<a href="https://github.com/nireah/ezenticket/blob/09ddb560251a4a063d992a61c2b245252b42d5a2/src/main/resources/com/ezen_ticket/concert/mapper/ConcertMapper.xml#L7-L19">코드보기<a>**
-* JSTL의 반복문을 이용하여 4개 * 2행으로 한 페이지에 총 8개씩 출력하도록 구현함. - **<a href="https://github.com/nireah/ezenticket/blob/5c718dfb70b772be715d38b247b23feda137fac9/src/main/webapp/WEB-INF/views/concert/list.jsp#L72-L104">코드보기<a>**
+* 해당 검색어가 포함된 콘서트 리스트가 출력되도록 구현함. - **<a href="https://github.com/nireah/ezenticket/blob/09ddb560251a4a063d992a61c2b245252b42d5a2/src/main/resources/com/ezen_ticket/concert/mapper/ConcertMapper.xml#L7-L19">🔗코드보기<a>**
+* JSTL의 반복문을 이용하여 4개 * 2행으로 한 페이지에 총 8개씩 출력하도록 구현함. - **<a href="https://github.com/nireah/ezenticket/blob/5c718dfb70b772be715d38b247b23feda137fac9/src/main/webapp/WEB-INF/views/concert/list.jsp#L72-L104">🔗코드보기<a>**
 
-#### 콘서트 수정, 삭제 제한 - <a href="https://github.com/nireah/ezenticket/blob/5c718dfb70b772be715d38b247b23feda137fac9/src/main/java/com/ezen_ticket/concert/controller/ConcertController.java#L198-L221">코드보기<a>, <a href="https://github.com/nireah/ezenticket/blob/09ddb560251a4a063d992a61c2b245252b42d5a2/src/main/resources/com/ezen_ticket/concert/mapper/ConcertMapper.xml#L127-L130">코드보기<a>
+#### 콘서트 수정, 삭제 제한 - <a href="https://github.com/nireah/ezenticket/blob/5c718dfb70b772be715d38b247b23feda137fac9/src/main/java/com/ezen_ticket/concert/controller/ConcertController.java#L198-L221">🔗코드보기<a>, <a href="https://github.com/nireah/ezenticket/blob/09ddb560251a4a063d992a61c2b245252b42d5a2/src/main/resources/com/ezen_ticket/concert/mapper/ConcertMapper.xml#L127-L130">🔗코드보기<a>
 * 해당 콘서트의 예매내역이 있는지를 Boolean 타입으로 반환하는 쿼리를 실행하여 확인 후 true가 반환될 경우 수정, 삭제가 불가능하도록 구현함.
 
-#### 콘서트 환불 규정 - <a href="https://github.com/nireah/ezenticket/blob/5c718dfb70b772be715d38b247b23feda137fac9/src/main/webapp/WEB-INF/views/ticketing/view.jsp#L13-L55">코드보기<a>
+#### 콘서트 환불 규정 - <a href="https://github.com/nireah/ezenticket/blob/5c718dfb70b772be715d38b247b23feda137fac9/src/main/webapp/WEB-INF/views/ticketing/view.jsp#L13-L55">🔗코드보기<a>
 * 현재 날짜와 관람일을 시간으로 변환한 뒤 그 차이를 계산하여 환불 버튼을 클릭했을 때 그 기간 차이를 기준으로 환불금액 알림창이 나오도록 구현함.
 
 ***
