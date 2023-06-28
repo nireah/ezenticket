@@ -48,3 +48,9 @@
 
 #### 콘서트 환불 규정 - <a href="https://github.com/nireah/ezenticket/blob/5c718dfb70b772be715d38b247b23feda137fac9/src/main/webapp/WEB-INF/views/ticketing/view.jsp#L13-L55">코드보기<a>
 * 현재 날짜와 관람일을 시간으로 변환한 뒤 그 차이를 계산하여 환불 버튼을 클릭했을 때 그 기간 차이를 기준으로 환불금액 알림창이 나오도록 구현함.
+
+***
+## 🗂 첨부파일
+* **<a href="요구사항 정의서.pdf">요구사항 정의서.pdf<a>**
+* **<a href="테이블명세서.pdf">테이블명세서.pdf<a>**
+* **<a href="스키마.sql">스키마.sql<a>**
