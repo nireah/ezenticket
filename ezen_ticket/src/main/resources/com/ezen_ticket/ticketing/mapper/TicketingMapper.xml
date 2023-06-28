@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ezen_ticket.ticketing.mapper.TicketingMapper">
+	
+	<select id="previewD" resultType="com.ezen_ticket.concert.vo.ConcertVO">
+		select c.name, c.actor, c.tour, c.priceR, c.priceS, c.priceA, d.dno, d.placeNo, p.placeName, 
+			to_char(d.concertDate, 'yy.mm.dd HH24:mi') concertDate, d.local
+		from concert c, concertDate d, place p
+		where (d.no = c.no and d.placeNo = p.placeNo) and (d.dno = #{dno})
+	</select>
+	
+	<select id="previewM" resultType="com.ezen_ticket.member.vo.MemberVO">
+		select id, name, to_char(birth, 'yy.mm.dd') birth, tel
+		from member
+		where id = #{id}
+	</select>
+	
+	<select id="list" resultType="com.ezen_ticket.ticketing.vo.TicketingVO">
+		select rnum, ticketNo, id, name, concertDate, placeName, cnt, dno, ticketDate
+		from(
+		    select rownum rnum, ticketNo, id, name, concertDate, placeName, cnt, dno, ticketDate
+		    from(
+		        select ti.ticketNo, ti.id, c.name, to_char(d.concertDate, 'yy.mm.dd HH24:mi') concertDate, 
+		        	p.placeName, ti.cnt, ti.dno, ti.ticketDate
+		        from concert c, ticketing ti, concertDate d, place p
+		        where 1=1
+		        <include refid="search" />
+		        and (ti.dno = d.dno and d.placeNo = p.placeNo and c.no = d.no)
+		        order by ticketNo desc
+		    )
+		)
+		where rnum between #{startRow} and #{endRow}
+<!-- 		select ti.ticketNo, ti.id, c.name, to_char(d.concertDate, 'yy.mm.dd HH24:mi') concertDate, p.placeName, ti.cnt, ti.dno -->
+<!-- 		from concert c, ticketing ti, concertDate d, place p -->
+<!-- 		where ti.dno = d.dno and d.placeNo = p.placeNo and c.no = d.no -->
+<!-- 		order by ticketNo desc -->
+	</select>
+	
+	<select id="myList" resultType="com.ezen_ticket.ticketing.vo.TicketingVO">
+		select ti.ticketNo, ti.id, c.name, to_char(d.concertDate, 'yy.mm.dd HH24:mi') concertDate, 
+			p.placeName, ti.cnt, ti.dno, ti.ticketDate
+		from concert c, ticketing ti, concertDate d, place p 
+		where (ti.dno = d.dno and d.placeNo = p.placeNo and c.no = d.no) and 
+		    (ti.id = #{id} and ti.ticketDate > to_char(trunc(add_months(sysdate, -12), 'dd'),'yy.mm.dd'))
+		order by ticketNo desc
+	</select>
+	
+	<select id="getTotalRow" resultType="Long">
+		select count(*)
+		from ticketing ti
+		<include refid="searchTable" />
+		where 1=1
+		<include refid="search" />
+		<include refid="searchJoin" />
+	</select>
+	
+	<sql id="search">
+		<if test="word !=null and word !=''.toString()">
+			and 1 = 0
+			<if test="key.indexOf('c'.toString()) >= 0">
+				or c.name like '%' || #{word} || '%'
+			</if>
+			<if test="key.indexOf('i'.toString()) >= 0">
+				or ti.id like '%' || #{word} || '%'
+			</if>
+		</if>
+	</sql>
+	
+	<sql id="searchJoin">
+		<if test="word !=null and word !=''.toString()">
+			and (ti.dno = d.dno and c.no = d.no)
+		</if>
+	</sql>
+	
+	<sql id="searchTable">
+		<if test="word !=null and word !=''.toString()">
+			, concert c, concertDate d
+		</if>
+	</sql>
+	
+	<select id="view" resultType="com.ezen_ticket.ticketing.vo.TicketingVO">
+		select ti.ticketNo, ti.id, c.name, to_char(d.concertDate, 'yy.mm.dd HH24:mi') concertDate, d.local, p.placeName, 
+			ti.ticketDate, ti.type, ti.price, ti.fee, ti.total, ti.cnt, ti.dno
+		from concert c, ticketing ti, concertDate d, place p
+		where (ti.dno = d.dno and d.placeNo = p.placeNo and c.no = d.no) and (ti.ticketNo = #{ticketNo})
+	</select>
+	
+	<select id="viewSeat" resultType="com.ezen_ticket.ticketing.vo.TicketingVO">
+		select seatGrade, seatNo from seat where ticketNo = #{ticketNo}
+	</select>
+	
+	<insert id="write">
+		insert into ticketing(ticketNo, dno, id, cnt, ticketDate, type, price, fee, total)
+		values(ticketing_seq.nextval, #{dno}, #{id}, #{cnt}, to_char(sysdate, 'yy.mm.dd hh24:mi'), #{type}, #{price}, #{fee}, #{total})
+	</insert>
+	
+	<insert id="writeSeat">
+		insert into seat
+		values(#{ticketNo}, #{seatGrade}, #{seatNo})
+	</insert>
+	
+	<select id="findNo" resultType="Long">
+		select max(ticketNo) from ticketing
+	</select>
+	
+	<select id="check" resultType="String">
+		select s.seatNo from seat s, ticketing t
+		where (t.ticketNo = s.ticketNo) and (t.dno = #{dno})
+	</select>
+	
+	<delete id="delete">
+		delete from ticketing where ticketNo = #{ticketNo}
+	</delete>
+	
+</mapper>

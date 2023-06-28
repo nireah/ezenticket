@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ezen_ticket.concert.mapper.ConcertMapper">
+	
+	<select id="searchAdmin" resultType="com.ezen_ticket.concert.vo.ConcertVO">
+		select rnum, no, category, name, image, actor, tour
+		from(
+		    select rownum rnum, no, category, name, image, actor, tour
+		    from(
+		        select no, category, name, image, actor, tour
+		        from concert
+		        where name like '%' || #{search} || '%'
+		        order by no desc
+		    )
+		)
+		where rnum between #{pageObject.startRow} and #{pageObject.endRow}
+	</select>
+	
+	<select id="search" resultType="com.ezen_ticket.concert.vo.ConcertVO">
+		select distinct c.no, c.category, c.name, c.image, c.actor, c.tour
+		from concert c, concertDate d
+		where (c.name like '%' || #{search} || '%' and d.concertDate >= trunc(sysdate)) and (c.no = d.no)
+		order by no desc
+	</select>
+	
+	<select id="listAdmin" resultType="com.ezen_ticket.concert.vo.ConcertVO">
+		select rnum, no, category, name, image, actor, tour
+		from(
+		    select rownum rnum, no, category, name, image, actor, tour
+		    from(
+		        select no, category, name, image, actor, tour
+		        from concert
+		        where category = #{category}
+		        order by no desc
+		    )
+		)
+		where rnum between #{pageObject.startRow} and #{pageObject.endRow}
+	</select>
+	
+	<select id="getTotalRow" resultType="Long">
+		select count(*)
+		from concert
+		where category=#{category}
+	</select>
+	
+	<select id="getTotalRow2" resultType="Long">
+		select count(*)
+		from concert
+		where name like '%' || #{search} || '%'
+	</select>
+	
+	<select id="list" resultType="com.ezen_ticket.concert.vo.ConcertVO">
+		select distinct c.no, c.category, c.name, c.image, c.actor, c.tour
+		from concert c, concertDate d
+		where (category = #{category} and d.concertDate >= trunc(sysdate)) and (c.no = d.no)
+		order by no desc
+	</select>
+	
+	<select id="listDateAdmin" resultType="com.ezen_ticket.concert.vo.ConcertVO">
+		select d.dno, d.no, d.local, to_char(d.concertDate, 'yy.mm.dd HH24:mi') concertDate, d.placeNo, p.placeName
+		from concertDate d, place p
+		where (d.no = #{no}) and (p.placeNo = d.placeNo)
+		order by dno
+	</select>
+	
+	<select id="listDate" resultType="com.ezen_ticket.concert.vo.ConcertVO">
+		select d.dno, d.no, d.local, to_char(d.concertDate, 'yy.mm.dd HH24:mi') concertDate, d.placeNo, p.placeName
+		from concertDate d, place p
+		where (d.no = #{no} and d.concertDate >= trunc(sysdate)) and (p.placeNo = d.placeNo)
+		order by dno
+	</select>
+	
+	<select id="view" resultType="com.ezen_ticket.concert.vo.ConcertVO">
+		select no, category, name, image, actor, runtime, age, priceR, priceS, priceA, tour, content
+		from concert
+		where no = #{no}
+	</select>
+	
+	<select id="viewDate" resultType="com.ezen_ticket.concert.vo.ConcertVO">
+		select d.no, d.dno, d.local, to_char(d.concertDate, 'yy.mm.dd HH24:mi') concertDate, d.placeNo, p.placeName
+		from concertDate d, place p 
+		where (p.placeNo = d.placeNo) and (d.dno = #{dno})
+	</select>
+	
+	<insert id="write">
+		insert into concert
+		values(concert_seq.nextval, #{category}, #{name}, #{actor}, #{content}, #{image}, 
+		#{runtime}, #{age}, #{tour}, #{priceR}, #{priceS}, #{priceA})
+	</insert>
+	
+	<insert id="writeDate">
+		insert into concertDate(dno, no, local, concertDate, placeNo)
+		values(concertDate_seq.nextval, #{no}, #{local}, to_date(#{concertDate}, 'yy.mm.dd hh24:mi'), #{placeNo})
+	</insert>
+	
+	<select id="findNo" resultType="long">
+		select max(no) from concert
+	</select>
+	
+	<update id="update">
+		update concert set 
+		category=#{category}, name=#{name}, actor=#{actor}, content=#{content}, runtime=#{runtime}, 
+		age=#{age}, priceR=#{priceR}, priceS=#{priceS}, priceA=#{priceA} 
+		where no=#{no}
+	</update>
+	
+	<update id="updateImage">
+		update concert set image=#{image}
+		where no=#{no}
+	</update>
+	
+	<update id="updateDate">
+		update concertDate set local = #{local}, concertDate = to_date(#{concertDate}, 'yy.mm.dd hh24:mi'), placeNo = #{placeNo}
+		where dno = #{dno}
+	</update>
+	
+	<delete id="delete">
+		delete from concert where no=#{no}
+	</delete>
+	
+	<delete id="deleteDate">
+		delete from concertDate where dno=#{dno}
+	</delete>
+	
+	<select id="check" resultType="Boolean">
+		select ti.ticketNo from ticketing ti, concertDate d
+		where (d.dno = ti.dno) and (d.no = #{no})
+	</select>
+	
+	<select id="check2" resultType="Boolean">
+		select ticketNo from ticketing
+		where dno = #{dno}
+	</select>
+	
+</mapper>
